@@ -1,0 +1,15 @@
+.flash {
+  padding: 9px;
+  margin: 5px;
+  border-radius: 5px;
+}
+.flash__success {
+  color: lightgreen;
+  background-color: darkgreen;
+  border: 2px yellow solid;
+}
+.flash__failure {
+  color: lightpink;
+  background-color: darkred;
+  border: 2px solid yellow;
+}

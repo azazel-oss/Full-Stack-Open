@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { addPerson, updatePerson } from "../services/persons";
 
-function PersonForm({ persons, setPersons }) {
+function PersonForm({ persons, setPersons, setFlashMessage }) {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   function nameInputChangeHandler(event) {
@@ -33,6 +33,13 @@ function PersonForm({ persons, setPersons }) {
               return person;
             })
           );
+          setFlashMessage({
+            message: `${newName}'s contact has been updated`,
+            type: "success",
+          });
+          setTimeout(() => {
+            setFlashMessage("");
+          }, 3000);
           setNewName("");
           setNewNumber("");
         });
@@ -40,6 +47,13 @@ function PersonForm({ persons, setPersons }) {
     }
     addPerson({ name: newName, number: newNumber }).then((response) => {
       setPersons([...persons, response.data]);
+      setFlashMessage({
+        message: `${newName} has been added to the phonebook`,
+        type: "success",
+      });
+      setTimeout(() => {
+        setFlashMessage("");
+      }, 3000);
       setNewName("");
       setNewNumber("");
     });
