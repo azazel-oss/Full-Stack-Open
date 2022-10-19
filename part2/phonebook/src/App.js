@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import DisplayPhonebook from "./components/DisplayPhonebook";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
-import axios from "axios";
+import { fetchAllPersons } from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -14,10 +14,12 @@ const App = () => {
       )
     : persons;
 
+  function deleteHandler(id) {
+    setPersons((prevState) => prevState.filter((person) => person.id !== id));
+  }
+
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((data) => setPersons(data.data));
+    fetchAllPersons().then((data) => setPersons(data.data));
   }, []);
 
   return (
@@ -27,7 +29,7 @@ const App = () => {
       <h2>Add new</h2>
       <PersonForm persons={persons} setPersons={setPersons} />
       <h2>Numbers</h2>
-      <DisplayPhonebook persons={personsToShow} />
+      <DisplayPhonebook persons={personsToShow} onDelete={deleteHandler} />
     </div>
   );
 };

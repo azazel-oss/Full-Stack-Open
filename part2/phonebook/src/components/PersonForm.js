@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { addPerson, updatePerson } from "../services/persons";
 
 function PersonForm({ persons, setPersons }) {
   const [newName, setNewName] = useState("");
@@ -12,18 +13,36 @@ function PersonForm({ persons, setPersons }) {
   }
   function addNameHandler(event) {
     event.preventDefault();
-    if (
-      persons.find((item) => item.name.toLowerCase() === newName.toLowerCase())
-    ) {
-      alert(`${newName} is already added`);
+    let existingPerson = persons.find(
+      (item) => item.name.toLowerCase() === newName.toLowerCase()
+    );
+    if (existingPerson) {
+      const confirmation = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with new number?`
+      );
+      if (confirmation)
+        updatePerson(existingPerson.id, {
+          name: existingPerson.name,
+          number: newNumber,
+        }).then((response) => {
+          setPersons((prevState) =>
+            prevState.map((person) => {
+              if (person.id === existingPerson.id) {
+                return response.data;
+              }
+              return person;
+            })
+          );
+          setNewName("");
+          setNewNumber("");
+        });
       return;
     }
-    setPersons([
-      ...persons,
-      { name: newName, number: newNumber, id: Math.random() },
-    ]);
-    setNewName("");
-    setNewNumber("");
+    addPerson({ name: newName, number: newNumber }).then((response) => {
+      setPersons([...persons, response.data]);
+      setNewName("");
+      setNewNumber("");
+    });
   }
   return (
     <form onSubmit={addNameHandler}>
